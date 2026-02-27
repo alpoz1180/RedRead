@@ -1,0 +1,32 @@
+
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>YourMoody Design System</title>
+      <script>
+        // Prevent flash of white background on dark mode
+        (function() {
+          const theme = localStorage.getItem('theme') || 'system';
+          const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const isDark = theme === 'dark' || (theme === 'system' && systemDark);
+          
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          }
+        })();
+      </script>
+      <script type="module" crossorigin src="/assets/index-DdXr5ocJ.js"></script>
+      <link rel="modulepreload" crossorigin href="/assets/react-vendor-ChA6AZcE.js">
+      <link rel="modulepreload" crossorigin href="/assets/motion-vendor-BWGeu_DS.js">
+      <link rel="modulepreload" crossorigin href="/assets/chart-vendor-SyVK0SDz.js">
+      <link rel="modulepreload" crossorigin href="/assets/supabase-vendor-Dq-Jb853.js">
+      <link rel="stylesheet" crossorigin href="/assets/index-C92V-AqC.css">
+    </head>
+
+    <body>
+      <div id="root"></div>
+    </body>
+  </html>
+  

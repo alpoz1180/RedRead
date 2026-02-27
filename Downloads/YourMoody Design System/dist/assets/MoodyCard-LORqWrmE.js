@@ -1,0 +1,1 @@
+import{j as e}from"./motion-vendor-BWGeu_DS.js";function t({children:o,className:s="",padding:d="md",onClick:r}){const a={none:"",sm:"p-3",md:"p-4",lg:"p-6"};return e.jsx("div",{className:`bg-card rounded-2xl border border-border shadow-sm ${a[d]} ${r?"cursor-pointer active:scale-[0.98] transition-transform":""} ${s}`,onClick:r,children:o})}export{t as M};
