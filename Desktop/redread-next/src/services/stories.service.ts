@@ -101,7 +101,7 @@ class StoriesService {
       return null;
     }
 
-    return data;
+    return data as unknown as Story;
   }
 
   /**
