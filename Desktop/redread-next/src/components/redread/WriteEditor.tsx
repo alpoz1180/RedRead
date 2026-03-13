@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { COVER_GRADIENTS } from "@/constants/gradients";
+import { logger } from "@/lib/logger";
 
 /* ─── Constants ───────────────────────────────────────────────── */
 
@@ -1486,9 +1487,9 @@ export function WriteEditor({ onExit, userId }: { onExit?: () => void; userId?: 
       if (isSupabase) {
         try {
           const { writeService } = await import("@/services/write.service");
-          const data = await writeService.loadStories(userId!);
+          const result = await writeService.loadStories(userId!);
           // Convert WriteStory → local Story format
-          setStories(data.map(ws => ({
+          setStories(result.data.map(ws => ({
             id: ws.id,
             title: ws.title,
             description: ws.description,
@@ -1514,8 +1515,8 @@ export function WriteEditor({ onExit, userId }: { onExit?: () => void; userId?: 
     if (isSupabase) {
       try {
         const { writeService } = await import("@/services/write.service");
-        const data = await writeService.loadStories(userId!);
-        setStories(data.map(ws => ({
+        const result = await writeService.loadStories(userId!);
+        setStories(result.data.map(ws => ({
           id: ws.id,
           title: ws.title,
           description: ws.description,
@@ -1525,7 +1526,8 @@ export function WriteEditor({ onExit, userId }: { onExit?: () => void; userId?: 
           status: ws.status,
           updatedAt: ws.updatedAt,
         })));
-      } catch {
+      } catch (err) {
+        logger.error("refresh: Supabase load failed, falling back to local", err);
         setStories(loadStories());
       }
     } else {

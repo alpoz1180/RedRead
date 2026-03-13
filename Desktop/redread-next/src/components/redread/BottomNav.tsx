@@ -4,7 +4,16 @@ import React, { useState } from "react";
 import { Home, Compass, BookOpen, PenLine, User } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 
-
+// Layout & style constants
+const MAX_MOBILE_WIDTH = 430;
+const NAV_BLUR_PX = 16;
+const NAV_PADDING_TOP = 8;
+const NAV_PADDING_BOTTOM = 16;
+const NAV_ITEM_BORDER_RADIUS = 12;
+const NAV_ICON_SIZE = 22;
+const NAV_ICON_STROKE_ACTIVE = 2.2;
+const NAV_ICON_STROKE_INACTIVE = 1.6;
+const NAV_LABEL_FONT_SIZE = 10;
 
 
 export type Tab = "home" | "browse" | "library" | "write" | "profile";
@@ -32,12 +41,12 @@ export function BottomNav({
   return (
     <div style={{
       position: "fixed", bottom: 0, zIndex: 50,
-      width: "100%", maxWidth: 430,
+      width: "100%", maxWidth: MAX_MOBILE_WIDTH,
       background: theme === "dark" ? "rgba(15,14,13,0.96)" : "rgba(250,250,248,0.96)",
-      backdropFilter: "blur(16px)",
-      WebkitBackdropFilter: "blur(16px)",
+      backdropFilter: `blur(${NAV_BLUR_PX}px)`,
+      WebkitBackdropFilter: `blur(${NAV_BLUR_PX}px)`,
       borderTop: "1px solid var(--muted)",
-      padding: "8px 8px 16px",
+      padding: `${NAV_PADDING_TOP}px ${NAV_PADDING_TOP}px ${NAV_PADDING_BOTTOM}px`,
       display: "flex",
     }}>
       {NAV_ITEMS.map((item) => {
@@ -50,7 +59,7 @@ export function BottomNav({
               flex: 1, display: "flex", flexDirection: "column",
               alignItems: "center", gap: 4,
               padding: "8px 4px",
-              borderRadius: 12, border: "none",
+              borderRadius: NAV_ITEM_BORDER_RADIUS, border: "none",
               background: hoveredTab === item.id ? "var(--secondary)" : "transparent",
               cursor: "pointer",
               transition: "background 0.15s",
@@ -59,13 +68,13 @@ export function BottomNav({
             onMouseLeave={() => setHoveredTab(null)}
           >
             <item.Icon
-              size={22}
-              strokeWidth={isActive ? 2.2 : 1.6}
+              size={NAV_ICON_SIZE}
+              strokeWidth={isActive ? NAV_ICON_STROKE_ACTIVE : NAV_ICON_STROKE_INACTIVE}
               color={isActive ? "var(--primary)" : "var(--muted-foreground)"}
             />
             <span style={{
               fontFamily: "'Nunito', sans-serif",
-              fontSize: 10, fontWeight: 700,
+              fontSize: NAV_LABEL_FONT_SIZE, fontWeight: 700,
               letterSpacing: "0.04em",
               color: isActive ? "var(--primary)" : "var(--muted-foreground)",
             }}>{item.label}</span>

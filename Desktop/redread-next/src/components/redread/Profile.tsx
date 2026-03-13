@@ -27,6 +27,12 @@ interface ProfileStory {
   cover_gradient: string | null;
 }
 
+function isProfileStory(value: unknown): value is ProfileStory {
+  if (typeof value !== "object" || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return typeof v["id"] === "string" && typeof v["title"] === "string";
+}
+
 interface ProfileProps {
   initialUser?: ProfileUser | null;
   initialStories?: ProfileStory[];
@@ -96,7 +102,7 @@ export function Profile({ initialUser, initialStories }: ProfileProps = {}) {
       .eq("user_id", profileUser.id)
       .then(({ data }) => {
         if (cancelled) return;
-        if (data) setBookmarks(data.map((b) => (b.story as unknown as ProfileStory)).filter(Boolean));
+        if (data) setBookmarks(data.map((b) => b.story).filter(isProfileStory));
       });
     return () => { cancelled = true; };
   }, [activeProfileTab, profileUser?.id]);

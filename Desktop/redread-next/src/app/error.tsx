@@ -19,8 +19,8 @@ export default function Error({
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      background: "#0F0E0D",
-      color: "#E8E6E1",
+      background: "var(--background)",
+      color: "var(--foreground)",
       fontFamily: "'Nunito', sans-serif",
       padding: 32,
       textAlign: "center",
@@ -30,7 +30,7 @@ export default function Error({
       <h2 style={{ fontFamily: "'Lora', serif", fontSize: 24, fontWeight: 700, margin: 0 }}>
         Bir şeyler ters gitti
       </h2>
-      <p style={{ color: "#9CA3AF", fontSize: 14, margin: 0, maxWidth: 320 }}>
+      <p style={{ color: "var(--muted-foreground)", fontSize: 14, margin: 0, maxWidth: 320 }}>
         Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.
       </p>
       <button
@@ -38,8 +38,8 @@ export default function Error({
         style={{
           marginTop: 8,
           padding: "10px 28px",
-          background: "#FF6122",
-          color: "#fff",
+          background: "var(--primary)",
+          color: "var(--background)",
           border: "none",
           borderRadius: 24,
           fontSize: 14,

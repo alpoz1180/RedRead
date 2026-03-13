@@ -20,6 +20,13 @@ export interface WriteChapter {
   content: string;
 }
 
+export interface LoadStoriesResult {
+  data: WriteStory[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
 const DEFAULT_GRADIENT = 'linear-gradient(135deg, #FF6122 0%, #ff9a3c 50%, #ffcd6b 100%)';
 
 /* ─── Supabase → Local format ─────────────────────────────────── */
@@ -47,23 +54,36 @@ function toWriteStory(s: Story, chapters: Chapter[]): WriteStory {
 
 class WriteService {
   /**
-   * Kullanıcının tüm hikayelerini yükle (bölümlerle birlikte)
+   * Kullanıcının hikayelerini sayfalı olarak yükle (bölümlerle birlikte).
+   * @param userId  - Hikaye sahibinin ID'si
+   * @param page     - 1-tabanlı sayfa numarası (varsayılan: 1)
+   * @param pageSize - Sayfa başına hikaye sayısı (varsayılan: 20)
    */
-  async loadStories(userId: string): Promise<WriteStory[]> {
-    const { data: stories, error } = await supabase
+  async loadStories(
+    userId: string,
+    page: number = 1,
+    pageSize: number = 20,
+  ): Promise<LoadStoriesResult> {
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    const { data: stories, error, count } = await supabase
       .from('stories')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('author_id', userId)
-      .order('updated_at', { ascending: false });
+      .order('updated_at', { ascending: false })
+      .range(from, to);
 
     if (error) {
       console.error('loadStories error:', error);
-      return [];
+      return { data: [], total: 0, page, pageSize };
     }
 
-    if (!stories || stories.length === 0) return [];
+    if (!stories || stories.length === 0) {
+      return { data: [], total: count ?? 0, page, pageSize };
+    }
 
-    // Load all chapters for these stories
+    // Load all chapters for the current page of stories
     const storyIds = stories.map(s => s.id);
     const { data: chapters, error: chErr } = await supabase
       .from('chapters')
@@ -82,7 +102,12 @@ class WriteService {
       chaptersByStory.set(ch.story_id, list);
     });
 
-    return stories.map(s => toWriteStory(s, chaptersByStory.get(s.id) || []));
+    return {
+      data: stories.map(s => toWriteStory(s, chaptersByStory.get(s.id) || [])),
+      total: count ?? 0,
+      page,
+      pageSize,
+    };
   }
 
   /**

@@ -87,7 +87,9 @@ class StoriesService {
       .from(this.TABLE)
       .select(
         `
-        *,
+        id, title, content, description, author_id, genre, published, status,
+        published_at, word_count, likes_count, cover_gradient,
+        created_at, updated_at,
         author:users!author_id(id, username, display_name, avatar_url)
       `
       )

@@ -47,8 +47,8 @@ export function useWriteStore(userId: string | null) {
     setLoading(true);
     try {
       if (isSupabase) {
-        const data = await writeService.loadStories(userId!);
-        setStories(data);
+        const result = await writeService.loadStories(userId!);
+        setStories(result.data);
       } else {
         setStories(loadLocal());
       }
@@ -212,7 +212,7 @@ export function useWriteStore(userId: string | null) {
       if (!isSupabase) saveLocal(next);
       return next;
     });
-  }, [isSupabase]);
+  }, [isSupabase, userId]);
 
   // ── Update chapter ──
   const updateChapter = useCallback(async (

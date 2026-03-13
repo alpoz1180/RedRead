@@ -15,6 +15,12 @@ import { AnimatePresence } from "motion/react";
 import type { Tab } from "./BottomNav";
 import { ErrorBoundary } from "./ErrorBoundary";
 
+// Layout breakpoint & sizing constants
+const DESKTOP_BREAKPOINT = 768;
+const MAX_MOBILE_WIDTH = 430;
+const SIDEBAR_WIDTH = 240;
+const CONTENT_MAX_WIDTH = 900;
+
 export function RedreadRoot() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("home");
@@ -31,13 +37,13 @@ export function RedreadRoot() {
   // Client'a geçince gerçek değerleri oku
   useEffect(() => {
     setShowOnboarding(localStorage.getItem("rr_onboarding_done") !== "1");
-    setIsMobile(window.innerWidth < 768);
+    setIsMobile(window.innerWidth < DESKTOP_BREAKPOINT);
     setHydrated(true);
   }, []);
 
   // Ekran boyutu değişince isMobile güncelle
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < DESKTOP_BREAKPOINT);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -118,7 +124,7 @@ export function RedreadRoot() {
 
           {/* İçerik alanı */}
           <div style={{
-            marginLeft: isWriteTab ? 0 : 240,
+            marginLeft: isWriteTab ? 0 : SIDEBAR_WIDTH,
             flex: 1,
             minHeight: "100vh",
             display: "flex",
@@ -126,7 +132,7 @@ export function RedreadRoot() {
           }}>
             {!isWriteTab && <TopBar isMobile={false} />}
             <div style={{
-              maxWidth: isWriteTab ? "100%" : 900,
+              maxWidth: isWriteTab ? "100%" : CONTENT_MAX_WIDTH,
               width: "100%",
               margin: "0 auto",
               flex: 1,
@@ -149,7 +155,7 @@ export function RedreadRoot() {
   return (
     <ErrorBoundary>
       <div style={{
-        maxWidth: 430, margin: "0 auto",
+        maxWidth: MAX_MOBILE_WIDTH, margin: "0 auto",
         background: "var(--background)", color: "var(--foreground)",
         minHeight: "100vh",
         position: "relative",

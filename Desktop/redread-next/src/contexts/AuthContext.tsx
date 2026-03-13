@@ -27,12 +27,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<'reader' | 'writer' | 'admin' | null>(null);
 
   const fetchRole = async (userId: string) => {
-    const { data } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', userId)
-      .single();
-    setRole((data?.role as 'reader' | 'writer' | 'admin') ?? 'reader');
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', userId)
+        .single();
+      if (error) throw error;
+      setRole((data?.role as 'reader' | 'writer' | 'admin') ?? 'reader');
+    } catch {
+      // Rol alınamazsa varsayılan olarak 'reader' ata
+      setRole('reader');
+    }
   };
 
   useEffect(() => {

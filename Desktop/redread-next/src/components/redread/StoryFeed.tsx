@@ -45,6 +45,12 @@ interface AIStory {
   author?: { username: string; display_name: string | null }[] | null;
 }
 
+function isAIStory(value: unknown): value is AIStory {
+  if (typeof value !== "object" || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return typeof v["id"] === "string" && typeof v["title"] === "string";
+}
+
 export function StoryFeed() {
   const [activeCategory, setActiveCategory] = useState("Romantizm");
   const [libraryIds, setLibraryIds] = useState<Set<string>>(new Set());
@@ -69,7 +75,9 @@ export function StoryFeed() {
         try {
           const stored = localStorage.getItem("user_genres");
           if (stored) userGenres = JSON.parse(stored);
-        } catch { /* */ }
+        } catch (err) {
+            console.error("localStorage genre parse error:", err);
+          }
 
         const { ids, source } = await getAIRecommendations(userGenres, 6);
         if (cancelled) return;
@@ -82,7 +90,7 @@ export function StoryFeed() {
             .in("id", ids);
 
           if (data && !cancelled) {
-            const sorted = ids.map(id => (data as unknown as AIStory[]).find(s => s.id === id)).filter(Boolean) as AIStory[];
+            const sorted = ids.map(id => (data as unknown[]).find((s): s is AIStory => isAIStory(s) && s.id === id)).filter((s): s is AIStory => s !== undefined);
             setAiStories(sorted);
           }
         } else {
@@ -94,7 +102,7 @@ export function StoryFeed() {
             .order("created_at", { ascending: false })
             .limit(6);
           if (data && !cancelled) {
-            setAiStories(data as unknown as AIStory[]);
+            setAiStories((data as unknown[]).filter(isAIStory));
             setAiSource("direct");
           }
         }

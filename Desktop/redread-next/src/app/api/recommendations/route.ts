@@ -46,9 +46,55 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = await req.json();
-    const userGenres: string[] = Array.isArray(body.userGenres) ? body.userGenres.slice(0, 10) : [];
-    const limit = Math.min(Math.max(1, Number(body.limit) || 6), 20);
+    // Manual validation (zod not available in this project)
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    if (typeof body !== "object" || body === null || Array.isArray(body)) {
+      return NextResponse.json({ error: "Request body must be a JSON object" }, { status: 400 });
+    }
+
+    const rawBody = body as Record<string, unknown>;
+
+    // Validate userGenres: optional, must be array of non-empty strings, max 10 items
+    if (rawBody.userGenres !== undefined) {
+      if (!Array.isArray(rawBody.userGenres)) {
+        return NextResponse.json(
+          { error: "Validation failed", field: "userGenres", message: "userGenres must be an array" },
+          { status: 400 }
+        );
+      }
+      const invalidItem = rawBody.userGenres.find(
+        (item) => typeof item !== "string" || item.trim().length === 0
+      );
+      if (invalidItem !== undefined) {
+        return NextResponse.json(
+          { error: "Validation failed", field: "userGenres", message: "Every item in userGenres must be a non-empty string" },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate limit: optional, must be a finite number when provided
+    if (rawBody.limit !== undefined) {
+      const parsedLimit = Number(rawBody.limit);
+      if (!Number.isFinite(parsedLimit)) {
+        return NextResponse.json(
+          { error: "Validation failed", field: "limit", message: "limit must be a number" },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Use validated (and coerced) values from here on
+    const userGenres: string[] = Array.isArray(rawBody.userGenres)
+      ? (rawBody.userGenres as string[]).slice(0, 10)
+      : [];
+    const limit = Math.min(Math.max(1, Number(rawBody.limit) || 6), 20);
 
     let query = getSupabase()
       .from("stories")

@@ -6,6 +6,7 @@ import { X, Moon, Sun, Globe, Lock, Bell, FileText, LogOut, Trash2, ChevronRight
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { logger } from "@/lib/logger";
 
 interface SettingsSheetProps {
   open: boolean;
@@ -133,8 +134,9 @@ export function SettingsSheet({ open, onClose, userEmail, onDeleteRequest }: Set
     try {
       await signOut();
       onClose();
-    } catch {
+    } catch (err) {
       // sign out başarısız olsa da spinner'ı kaldır
+      logger.error("Sign out failed:", err);
     } finally {
       setSigningOut(false);
     }

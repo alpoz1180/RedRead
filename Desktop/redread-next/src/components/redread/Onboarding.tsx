@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ChevronRight, Mail, Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { GENRES } from "@/constants/genres";
+import { logger } from "@/lib/logger";
 
 const darkInputStyle: React.CSSProperties = {
   width: "100%",
@@ -742,7 +743,8 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
                               onComplete();
                             }
                           }
-                        } catch {
+                        } catch (err) {
+                          logger.error("auth: email sign-in/sign-up failed", err);
                           setAuthError("Bir hata oluştu. Tekrar dene.");
                         }
                         setAuthLoading(false);
