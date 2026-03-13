@@ -338,6 +338,36 @@ async function sendPushNotification(
   return { ok: response.ok, status: response.status, body: responseBody };
 }
 
+// ─── Rate limiter ─────────────────────────────────────────────────────────────
+
+const RATE_LIMIT_MAX = 10;       // max requests per window
+const RATE_LIMIT_WINDOW_MS = 60_000; // 60 seconds in ms
+
+interface RateLimitEntry {
+  count: number;
+  windowStart: number;
+}
+
+const rateLimitMap = new Map<string, RateLimitEntry>();
+
+function isRateLimited(userId: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(userId);
+
+  if (!entry || now - entry.windowStart >= RATE_LIMIT_WINDOW_MS) {
+    // No existing window or window has expired — start a fresh one
+    rateLimitMap.set(userId, { count: 1, windowStart: now });
+    return false;
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX) {
+    return true;
+  }
+
+  entry.count += 1;
+  return false;
+}
+
 // ─── Main handler ─────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request): Promise<Response> => {
@@ -366,6 +396,14 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ error: "userId, title, and body are required" }),
       { status: 400, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
+  // Rate limit: max 10 requests per userId per 60 seconds
+  if (isRateLimited(userId)) {
+    return new Response(
+      JSON.stringify({ error: "Rate limit exceeded" }),
+      { status: 429, headers: { "Content-Type": "application/json" } },
     );
   }
 
