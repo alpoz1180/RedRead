@@ -177,7 +177,7 @@ export function StoryFeed() {
 
       {/* FEATURED */}
       {featured !== null && (
-      <div className="fade-up" style={{ margin: "20px 16px 0", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 24px rgba(255,97,34,0.25)", cursor: "pointer" }}>
+      <div className="fade-up" role="article" aria-label={`Editörün Seçimi: ${featured.title}`} style={{ margin: "20px 16px 0", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 24px rgba(255,97,34,0.25)", cursor: "pointer" }}>
         <div style={{ background: featured.bg, padding: "28px 20px 24px", position: "relative", minHeight: 200 }}>
           <div style={{ position: "absolute", right: -20, top: -20, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
           <div style={{ position: "absolute", right: 20, bottom: -30, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
@@ -197,7 +197,7 @@ export function StoryFeed() {
               <span style={{ fontFamily: "'Nunito', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>{featured.chapters} bölüm</span>
             </div>
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-              <button style={{ background: "#ffffff", color: "var(--primary)", border: "none", padding: "10px 20px", borderRadius: 8, fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 13, cursor: "pointer" }}>
+              <button aria-label={`${featured.title} hikayesini şimdi oku`} style={{ background: "#ffffff", color: "var(--primary)", border: "none", padding: "10px 20px", borderRadius: 8, fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 13, cursor: "pointer" }}>
                 Şimdi Oku
               </button>
               <span className="stat-inline" style={{ fontFamily: "'Nunito', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.8)", fontWeight: 600 }}>
@@ -214,18 +214,20 @@ export function StoryFeed() {
 
       {/* TRENDING TAGS */}
       <div className="fade-up-2" style={{ padding: "20px 16px 0" }}>
-        <div style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", paddingBottom: 4 }}>
-          {trendingTags.map((t) => <span key={t} className="tag-chip">{t}</span>)}
+        <div role="list" aria-label="Trend etiketler" style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", paddingBottom: 4 }}>
+          {trendingTags.map((t) => <span role="listitem" key={t} className="tag-chip">{t}</span>)}
         </div>
       </div>
 
       {/* CATEGORIES */}
       <div className="fade-up-2" style={{ padding: "16px 16px 0" }}>
-        <div style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", paddingBottom: 4 }}>
+        <div role="list" aria-label="Hikaye kategorileri" style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", paddingBottom: 4 }}>
           {categories.map((c) => (
             <button
               key={c}
+              role="listitem"
               className={`cat-pill ${activeCategory === c ? "active" : ""}`}
+              aria-pressed={activeCategory === c}
               onClick={() => setActiveCategory(c)}
             >{c}</button>
           ))}
@@ -247,7 +249,7 @@ export function StoryFeed() {
           </div>
 
           {aiLoading ? (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 0", gap: 12 }}>
+            <div aria-busy="true" aria-label="Hikayeler yükleniyor" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 0", gap: 12 }}>
               <Loader2 size={24} color={"var(--primary)"} style={{ animation: "spin 1s linear infinite" }} />
               <span style={{ fontFamily: "'Nunito', sans-serif", fontSize: 13, color: "var(--muted-foreground)", fontWeight: 600 }}>
                 Senin için hikayeler seçiliyor...
@@ -257,7 +259,7 @@ export function StoryFeed() {
           ) : aiStories.length > 0 ? (
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {aiStories.map((s) => (
-                <div key={s.id} className="story-card">
+                <div key={s.id} role="article" aria-label={s.title || "Başlıksız"} className="story-card">
                   <div style={{
                     height: 160,
                     background: s.cover_gradient || "linear-gradient(160deg,#667eea,#764ba2)",
@@ -326,7 +328,7 @@ export function StoryFeed() {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           {stories.map((s) => (
-            <div key={s.id} className="story-card">
+            <div key={s.id} role="article" aria-label={s.title} className="story-card">
               <div style={{ height: 160, background: s.bg, position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ fontFamily: "'Lora', serif", fontSize: 56, color: "rgba(255,255,255,0.15)", fontStyle: "italic", fontWeight: 700 }}>{s.initial}</span>
 
@@ -346,6 +348,8 @@ export function StoryFeed() {
                 <button
                   className={`lib-btn ${libraryIds.has(s.id) ? "active" : "inactive"}`}
                   style={{ position: "absolute", top: 8, right: 8 }}
+                  aria-label={libraryIds.has(s.id) ? `${s.title} kütüphaneden çıkar` : `${s.title} kütüphaneye ekle`}
+                  aria-pressed={libraryIds.has(s.id)}
                   onClick={(e) => { e.stopPropagation(); toggleLibrary(s.id); }}
                 >
                   <Heart size={15} strokeWidth={2} fill={libraryIds.has(s.id) ? "currentColor" : "none"} />
@@ -391,7 +395,7 @@ export function StoryFeed() {
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 12, color: "var(--muted-foreground)", fontWeight: 600, lineHeight: 1.5, marginBottom: 12 }}>
               90 milyondan fazla okuyucu seni bekliyor.
             </div>
-            <button style={{ background: "var(--primary)", color: "white", border: "none", padding: "9px 18px", borderRadius: 8, fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 12, cursor: "pointer" }}>
+            <button aria-label="Hikaye yazmaya başla" style={{ background: "var(--primary)", color: "white", border: "none", padding: "9px 18px", borderRadius: 8, fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 12, cursor: "pointer" }}>
               Yazmaya Başla
             </button>
           </div>

@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { StoryFeed } from "./StoryFeed";
 import { TopBar } from "./TopBar";
 import { BottomNav } from "./BottomNav";
-import { Profile } from "./Profile";
-import { Library } from "./Library";
 import { Onboarding } from "./Onboarding";
+
 import { WriteEditor } from "./WriteEditor";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,6 +13,66 @@ import { Auth } from "./Auth";
 import { AnimatePresence } from "motion/react";
 import type { Tab } from "./BottomNav";
 import { ErrorBoundary } from "./ErrorBoundary";
+
+// Lazy-loaded heavy tab components — only fetched when the user first navigates there
+const Profile = lazy(() =>
+  import("./Profile").then((m) => ({ default: m.Profile }))
+);
+const Library = lazy(() =>
+  import("./Library").then((m) => ({ default: m.Library }))
+);
+
+/** Skeleton shown while a lazy tab chunk is being fetched */
+function TabSkeleton() {
+  return (
+    <div
+      style={{
+        padding: "24px 16px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        background: "var(--background)",
+      }}
+    >
+      {/* Avatar + name row (profile-like) */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: "50%",
+            background: "var(--card)",
+          }}
+        />
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
+          <div style={{ height: 14, width: "40%", borderRadius: 6, background: "var(--muted)" }} />
+          <div style={{ height: 12, width: "60%", borderRadius: 6, background: "var(--muted)" }} />
+        </div>
+      </div>
+      {/* Content rows */}
+      {[100, 80, 90].map((w, i) => (
+        <div
+          key={i}
+          style={{
+            height: 14,
+            width: `${w}%`,
+            borderRadius: 6,
+            background: "var(--muted)",
+          }}
+        />
+      ))}
+      {/* Card block */}
+      <div
+        style={{
+          height: 120,
+          borderRadius: 12,
+          background: "var(--card)",
+          marginTop: 8,
+        }}
+      />
+    </div>
+  );
+}
 
 // Layout breakpoint & sizing constants
 const DESKTOP_BREAKPOINT = 768;
@@ -71,7 +130,11 @@ export function RedreadRoot() {
       case "browse":
         return <StoryFeed />;
       case "library":
-        return <Library />;
+        return (
+          <Suspense fallback={<TabSkeleton />}>
+            <Library />
+          </Suspense>
+        );
       case "write":
         if (role !== 'writer' && role !== 'admin') {
           return (
@@ -98,7 +161,11 @@ export function RedreadRoot() {
         }
         return <WriteEditor onExit={() => setActiveTab("home")} userId={user?.id ?? null} />;
       case "profile":
-        return <Profile />;
+        return (
+          <Suspense fallback={<TabSkeleton />}>
+            <Profile />
+          </Suspense>
+        );
     }
   };
 

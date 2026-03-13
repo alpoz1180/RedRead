@@ -104,7 +104,7 @@ export function Sidebar({ activeTab, onTabChange, user, onAvatarClick }: Sidebar
       </div>
 
       {/* Nav items */}
-      <nav style={{ flex: 1 }}>
+      <nav aria-label="Ana gezinme" style={{ flex: 1 }}>
         {NAV_ITEMS.map((item) => {
           const isActive = activeTab === item.id;
           const isHovered = hoveredItem === item.id;
@@ -115,6 +115,7 @@ export function Sidebar({ activeTab, onTabChange, user, onAvatarClick }: Sidebar
               onClick={() => onTabChange(item.id)}
               onMouseEnter={() => setHoveredItem(item.id)}
               onMouseLeave={() => setHoveredItem(null)}
+              aria-current={isActive ? "page" : undefined}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -169,6 +170,8 @@ export function Sidebar({ activeTab, onTabChange, user, onAvatarClick }: Sidebar
           onClick={toggleTheme}
           onMouseEnter={() => setThemeHovered(true)}
           onMouseLeave={() => setThemeHovered(false)}
+          aria-label={theme === "dark" ? "Açık temaya geç" : "Koyu temaya geç"}
+          aria-pressed={theme === "dark"}
           style={{
             display: "flex",
             alignItems: "center",
@@ -204,6 +207,7 @@ export function Sidebar({ activeTab, onTabChange, user, onAvatarClick }: Sidebar
           onClick={onAvatarClick}
           onMouseEnter={() => setAvatarHovered(true)}
           onMouseLeave={() => setAvatarHovered(false)}
+          aria-label={user ? `Profil: ${user.user_metadata?.username ?? user.email ?? "Kullanıcı"}` : "Giriş yap"}
           style={{
             display: "flex",
             alignItems: "center",

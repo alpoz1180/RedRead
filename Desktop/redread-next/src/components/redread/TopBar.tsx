@@ -59,7 +59,7 @@ export function TopBar({ isMobile = true }: { isMobile?: boolean }) {
 
   return (
     <>
-      <div style={{
+      <header style={{
         ...barStyle,
         background: theme === "dark" ? "rgba(15,14,13,0.95)" : "rgba(250,250,248,0.95)",
         backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
@@ -73,23 +73,36 @@ export function TopBar({ isMobile = true }: { isMobile?: boolean }) {
         </div>
 
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button onClick={toggleTheme} style={{ width: 36, height: 36, background: theme === "dark" ? "#2A2725" : "var(--muted)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", border: "none" }}>
+          <button
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Açık temaya geç" : "Koyu temaya geç"}
+            aria-pressed={theme === "dark"}
+            style={{ width: 36, height: 36, background: theme === "dark" ? "#2A2725" : "var(--muted)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", border: "none" }}>
             {theme === "dark" ? <Sun size={18} strokeWidth={2} color="#FFB86C" /> : <Moon size={18} strokeWidth={2} color="var(--muted-foreground)" />}
           </button>
 
-          <button onClick={() => setSearchOpen(true)} style={{ width: 36, height: 36, background: theme === "dark" ? "#2A2725" : "var(--muted)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", border: "none" }}>
+          <button
+            onClick={() => setSearchOpen(true)}
+            aria-label="Arama yap"
+            aria-expanded={searchOpen}
+            style={{ width: 36, height: 36, background: theme === "dark" ? "#2A2725" : "var(--muted)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", border: "none" }}>
             <Search size={18} strokeWidth={2} color="var(--muted-foreground)" />
           </button>
 
           <div style={{ position: "relative" }}>
-            <div style={{ width: 36, height: 36, background: "var(--muted)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+            <div
+              role="button"
+              aria-label="Bildirimler"
+              tabIndex={0}
+              style={{ width: 36, height: 36, background: "var(--muted)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
               <Bell size={18} strokeWidth={2} color="var(--muted-foreground)" />
             </div>
-            <div style={{ position: "absolute", top: 6, right: 6, width: 8, height: 8, background: "var(--primary)", borderRadius: "50%", border: "2px solid var(--background)" }} />
+            <div aria-hidden="true" style={{ position: "absolute", top: 6, right: 6, width: 8, height: 8, background: "var(--primary)", borderRadius: "50%", border: "2px solid var(--background)" }} />
           </div>
 
           <button
             onClick={() => { if (!authUser) setShowAuth(true); }}
+            aria-label={authUser ? `Profil: ${authUser.user_metadata?.username ?? authUser.email ?? "Kullanıcı"}` : "Giriş yap"}
             style={{
               width: 36, height: 36, borderRadius: 10,
               background: "linear-gradient(135deg, var(--primary), var(--primary-mid))",
@@ -103,7 +116,7 @@ export function TopBar({ isMobile = true }: { isMobile?: boolean }) {
               : "R"}
           </button>
         </div>
-      </div>
+      </header>
 
       {/* Auth modal */}
       <AnimatePresence>
@@ -114,31 +127,40 @@ export function TopBar({ isMobile = true }: { isMobile?: boolean }) {
 
       {/* Search overlay */}
       {searchOpen && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" }} onClick={closeSearch}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Hikaye arama"
+          style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" }}
+          onClick={closeSearch}
+        >
           <div
             style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--background)", borderBottomLeftRadius: 20, borderBottomRightRadius: 20, overflow: "hidden" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 20px", borderBottom: "1px solid var(--muted)" }}>
-              <Search size={18} strokeWidth={2} color="var(--primary)" />
+              <Search aria-hidden="true" size={18} strokeWidth={2} color="var(--primary)" />
               <input
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Hikaye ara..."
+                aria-label="Hikaye ara"
+                aria-autocomplete="list"
+                aria-controls="search-results"
                 style={{ flex: 1, background: "none", border: "none", outline: "none", fontFamily: "'Nunito', sans-serif", fontSize: 15, fontWeight: 600, color: "var(--foreground)" }}
               />
               {searching
-                ? <Loader2 size={18} color="var(--muted-foreground)" style={{ animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
-                : <button onClick={closeSearch} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted-foreground)", display: "flex", padding: 4 }}><X size={18} /></button>
+                ? <Loader2 aria-hidden="true" size={18} color="var(--muted-foreground)" style={{ animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+                : <button onClick={closeSearch} aria-label="Aramayı kapat" style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted-foreground)", display: "flex", padding: 4 }}><X size={18} aria-hidden="true" /></button>
               }
               <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             </div>
 
             {results.length > 0 && (
-              <div style={{ maxHeight: 360, overflowY: "auto" }}>
+              <div id="search-results" role="listbox" aria-label="Arama sonuçları" style={{ maxHeight: 360, overflowY: "auto" }}>
                 {results.map((s) => (
-                  <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", cursor: "pointer", borderBottom: "1px solid var(--muted)" }}>
+                  <div key={s.id} role="option" aria-selected={false} tabIndex={0} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", cursor: "pointer", borderBottom: "1px solid var(--muted)" }}>
                     <div style={{ width: 40, height: 40, borderRadius: 8, flexShrink: 0, background: s.cover_gradient || "linear-gradient(135deg,#667eea,#764ba2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <span style={{ fontFamily: "'Lora', serif", fontSize: 18, color: "rgba(255,255,255,0.25)", fontStyle: "italic" }}>{s.title?.charAt(0)}</span>
                     </div>

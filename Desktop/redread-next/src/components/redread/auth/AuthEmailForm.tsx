@@ -81,6 +81,8 @@ export function AuthEmailForm({
               placeholder="Kullanıcı adı"
               value={username}
               onChange={(e) => onUsernameChange(e.target.value)}
+              aria-label="Kullanıcı adı"
+              autoComplete="username"
               style={inputStyle}
               onFocus={(e) => (e.currentTarget.style.borderColor = "var(--primary)")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "var(--muted)")}
@@ -93,6 +95,8 @@ export function AuthEmailForm({
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
             required
+            aria-label="E-posta adresi"
+            autoComplete="email"
             style={inputStyle}
             onFocus={(e) => (e.currentTarget.style.borderColor = "var(--primary)")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "var(--muted)")}
@@ -106,6 +110,8 @@ export function AuthEmailForm({
               onChange={(e) => onPasswordChange(e.target.value)}
               required
               minLength={6}
+              aria-label="Şifre"
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
               style={{ ...inputStyle, paddingRight: 44 }}
               onFocus={(e) => (e.currentTarget.style.borderColor = "var(--primary)")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "var(--muted)")}
@@ -113,6 +119,8 @@ export function AuthEmailForm({
             <button
               type="button"
               onClick={onTogglePassword}
+              aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
+              aria-pressed={showPassword}
               style={{
                 position: "absolute",
                 right: 12,
@@ -153,6 +161,8 @@ export function AuthEmailForm({
 
           {error && (
             <p
+              role="alert"
+              aria-live="assertive"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 fontSize: 12,
@@ -167,6 +177,7 @@ export function AuthEmailForm({
           <button
             type="submit"
             disabled={loading}
+            aria-busy={loading}
             style={{
               ...primaryButtonStyle,
               opacity: loading ? 0.7 : 1,

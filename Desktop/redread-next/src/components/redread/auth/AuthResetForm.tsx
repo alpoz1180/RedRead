@@ -49,6 +49,8 @@ export function AuthResetForm({
 
       {forgotSuccess ? (
         <p
+          role="status"
+          aria-live="polite"
           style={{
             fontFamily: "'Nunito', sans-serif",
             fontSize: 13,
@@ -67,6 +69,8 @@ export function AuthResetForm({
             value={forgotEmail}
             onChange={(e) => onForgotEmailChange(e.target.value)}
             required
+            aria-label="Şifre sıfırlama için e-posta adresi"
+            autoComplete="email"
             style={inputStyle}
             onFocus={(e) => (e.currentTarget.style.borderColor = "var(--primary)")}
             onBlur={(e) => (e.currentTarget.style.borderColor = "var(--muted)")}
@@ -74,6 +78,8 @@ export function AuthResetForm({
 
           {error && (
             <p
+              role="alert"
+              aria-live="assertive"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 fontSize: 12,
@@ -88,6 +94,7 @@ export function AuthResetForm({
           <button
             type="submit"
             disabled={forgotLoading}
+            aria-busy={forgotLoading}
             style={{
               ...primaryButtonStyle,
               opacity: forgotLoading ? 0.7 : 1,

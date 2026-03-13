@@ -31,7 +31,9 @@
       "Bash(ls -la C:/Users/PC1/Desktop/redread-next/.env* 2>/dev/null || echo \"no .env files\")",
       "Bash(git add:*)",
       "Bash(supabase secrets:*)",
-      "Bash(grep \"CREATE TABLE\" /c/Users/PC1/Desktop/redread-next/supabase/migrations/*.sql)"
+      "Bash(grep \"CREATE TABLE\" /c/Users/PC1/Desktop/redread-next/supabase/migrations/*.sql)",
+      "Bash(cd \"C:\\\\Users\\\\PC1\\\\Desktop\\\\redread-next\" && npm uninstall next-intl)",
+      "Bash(cd \"C:\\\\Users\\\\PC1\\\\Desktop\\\\redread-next\" && npm test 2>&1 | tail -20)"
     ]
   }
 }

@@ -26,6 +26,7 @@ export function AuthSocialButtons({
       {/* Google sign-in */}
       <button
         onClick={onGoogleSignIn}
+        aria-label="Google hesabınızla giriş yapın"
         style={{
           width: "100%",
           padding: "13px",
@@ -44,7 +45,7 @@ export function AuthSocialButtons({
           boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
         }}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path
             fill="#4285F4"
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -84,6 +85,7 @@ export function AuthSocialButtons({
       {/* Email entry */}
       <button
         onClick={onShowEmailForm}
+        aria-label="E-posta adresiyle giriş yapın veya kayıt olun"
         style={{
           width: "100%",
           padding: "13px",
@@ -107,6 +109,8 @@ export function AuthSocialButtons({
 
       {error && (
         <p
+          role="alert"
+          aria-live="assertive"
           style={{
             fontFamily: "'Nunito', sans-serif",
             fontSize: 12,

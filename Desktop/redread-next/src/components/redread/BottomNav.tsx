@@ -39,7 +39,9 @@ export function BottomNav({
   const [hoveredTab, setHoveredTab] = useState<Tab | null>(null);
   if (!isMobile) return null;
   return (
-    <div style={{
+    <nav
+      aria-label="Alt gezinme"
+      style={{
       position: "fixed", bottom: 0, zIndex: 50,
       width: "100%", maxWidth: MAX_MOBILE_WIDTH,
       background: theme === "dark" ? "rgba(15,14,13,0.96)" : "rgba(250,250,248,0.96)",
@@ -55,6 +57,8 @@ export function BottomNav({
           <button
             key={item.id}
             onClick={() => onTabChange(item.id)}
+            aria-label={item.label}
+            aria-current={isActive ? "page" : undefined}
             style={{
               flex: 1, display: "flex", flexDirection: "column",
               alignItems: "center", gap: 4,
@@ -87,6 +91,6 @@ export function BottomNav({
           </button>
         );
       })}
-    </div>
+    </nav>
   );
 }
