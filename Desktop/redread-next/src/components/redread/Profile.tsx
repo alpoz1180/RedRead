@@ -102,7 +102,7 @@ export function Profile({ initialUser, initialStories }: ProfileProps = {}) {
       .eq("user_id", profileUser.id)
       .then(({ data }) => {
         if (cancelled) return;
-        if (data) setBookmarks(data.map((b) => b.story).filter(isProfileStory));
+        if (data) setBookmarks(data.flatMap((b) => Array.isArray(b.story) ? b.story : [b.story]).filter(isProfileStory));
       });
     return () => { cancelled = true; };
   }, [activeProfileTab, profileUser?.id]);
