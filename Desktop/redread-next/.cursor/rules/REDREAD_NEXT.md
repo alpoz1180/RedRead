@@ -1,0 +1,34 @@
+- **Framework**: Next.js 16 App Router (React 19, React Compiler on by default)\
+- **Rendering model**: Server Components by default, `\"use client\"` only where we use state, effects, `motion/react`, browser APIs or imperative event handlers.\
+- **Routing**:\
+  - Locale-prefixed routes: `/[locale]/...` with `tr` (default) and `en`.\
+  - Main feed: `[locale]/page.tsx` → dark, full-screen Redread reader shell.\
+  - Story detail: `[locale]/story/[id]/page.tsx` (SEO metadata from story).\
+  - Composer: `[locale]/write/page.tsx` (client-side form for now).\
+  - Profile: `[locale]/profile/[username]/page.tsx` (currently demo profile).\
+- **Styling**:\
+  - Tailwind CSS v4 via `@import "tailwindcss"` in `src/app/globals.css`.\
+  - Custom theme tokens in `src/styles/theme.css`.\
+  - Google Fonts (Lora + Inter) via `src/styles/fonts.css`.\
+  - Design is **mobile-first**; primary target width ≈ 390px, but components should behave gracefully up to desktop breakpoints already present in classes.\
+- **Animations**:\
+  - Use `motion/react` for all animations and interaction micro-animations.\
+  - Story interactions live in `src/components/redread/StoryFeed.tsx` (heart particle burst, comment spring tap, bookmark slide-in, share jump).\
+  - Avoid heavy, layout-jumping animations; favor opacity/transform-based transitions.\
+- **Supabase**:\
+  - SSR helpers live in `src/lib/supabase/server.ts` and `src/lib/supabase/client.ts`.\
+  - Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (must be set in `.env.local` and deployment environment).\
+  - Reads should prefer server helpers; writes/mutations can use browser client from client components.\
+- **Internationalization (next-intl)**:\
+  - Message files: `src/i18n/tr.json`, `src/i18n/en.json`.\
+  - Middleware-based locale routing in `middleware.ts` with default locale `tr`.\
+  - Locale layout wrapper: `src/app/[locale]/layout.tsx` using `I18nProvider`.\
+  - **UI copy** is primarily Turkish for now; code (identifiers, types, comments) should be English.\
+- **Code style**:\
+  - Prefer function components with TypeScript types on props.\
+  - Use absolute imports via `@/*` (see `tsconfig.json` paths).\
+  - Keep domain-specific UI in `src/components/redread/**`, avoid mixing with generic shared components.\
+  - Do not introduce additional global state libraries unless necessary; start with local state + server data.\
+- **Deployment assumptions**:\
+  - App is expected to run on a platform like Vercel with Next.js support.\
+  - Always keep server-only code (keys, secrets) out of client bundles; only `NEXT_PUBLIC_*` vars are safe on the client.***

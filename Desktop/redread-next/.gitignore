@@ -73,5 +73,10 @@ coverage/
 .bun/
 tmp/
 
+# Gradle (Android/Kotlin tooling)
+.gradle/
+
 .vercel
 .env*.local
+
+.vercel

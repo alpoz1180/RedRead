@@ -29,18 +29,27 @@ function urlBase64ToUint8Array(base64String: string): ArrayBuffer {
 
 async function registerPush(userId: string): Promise<boolean> {
   if (!("serviceWorker" in navigator) || !("PushManager" in window)) return false;
+  if (!VAPID_PUBLIC_KEY) {
+    console.error("NEXT_PUBLIC_VAPID_KEY is not set");
+    return false;
+  }
   const permission = await Notification.requestPermission();
   if (permission !== "granted") return false;
-  const reg = await navigator.serviceWorker.ready;
-  const sub = await reg.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-  });
-  const { error } = await supabase.from("push_subscriptions").upsert(
-    { user_id: userId, subscription: sub.toJSON() },
-    { onConflict: "user_id" }
-  );
-  return !error;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    });
+    const { error } = await supabase.from("push_subscriptions").upsert(
+      { user_id: userId, subscription: sub.toJSON() },
+      { onConflict: "user_id" }
+    );
+    return !error;
+  } catch (err) {
+    console.error("Push registration failed:", err);
+    return false;
+  }
 }
 
 async function unregisterPush(userId: string): Promise<void> {
@@ -91,7 +100,7 @@ export function SettingsSheet({ open, onClose, userEmail, onDeleteRequest }: Set
       .from("push_subscriptions")
       .select("id")
       .eq("user_id", user.id)
-      .single()
+      .maybeSingle()
       .then(({ data }) => setNotifEnabled(!!data));
   }, [open, user?.id]);
 
@@ -110,15 +119,25 @@ export function SettingsSheet({ open, onClose, userEmail, onDeleteRequest }: Set
 
   const handlePasswordReset = async () => {
     if (!userEmail) return;
-    await resetPassword(userEmail);
-    setPasswordSent(true);
-    setTimeout(() => setPasswordSent(false), 4000);
+    const { error } = await resetPassword(userEmail);
+    if (!error) {
+      setPasswordSent(true);
+      setTimeout(() => setPasswordSent(false), 4000);
+    } else {
+      console.error("Password reset failed:", error.message);
+    }
   };
 
   const handleSignOut = async () => {
     setSigningOut(true);
-    await signOut();
-    onClose();
+    try {
+      await signOut();
+      onClose();
+    } catch {
+      // sign out başarısız olsa da spinner'ı kaldır
+    } finally {
+      setSigningOut(false);
+    }
   };
 
   const sectionTitle: React.CSSProperties = {

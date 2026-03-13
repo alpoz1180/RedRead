@@ -53,7 +53,7 @@ export function EditProfileSheet({ open, onClose, profileUser, onSaved }: EditPr
       setError("");
       setUsernameStatus("idle");
     }
-  }, [open]);
+  }, [open, profileUser]);
 
   useEffect(() => {
     if (username === profileUser.username) { setUsernameStatus("idle"); return; }
@@ -70,7 +70,7 @@ export function EditProfileSheet({ open, onClose, profileUser, onSaved }: EditPr
       setUsernameStatus(data ? "taken" : "ok");
     }, 500);
     return () => { if (usernameTimerRef.current) clearTimeout(usernameTimerRef.current); };
-  }, [username]);
+  }, [username, profileUser.username]);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

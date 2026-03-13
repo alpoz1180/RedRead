@@ -1,0 +1,10 @@
+{
+  "app": {
+    "title": "Redread",
+    "tagline": "Discover stories you will love."
+  },
+  "nav": {
+    "home": "Home",
+    "profile": "Profile"
+  }
+}

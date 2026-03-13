@@ -1,0 +1,10 @@
+{
+  "app": {
+    "title": "Redread",
+    "tagline": "Seveceğin hikayeleri keşfet."
+  },
+  "nav": {
+    "home": "Ana sayfa",
+    "profile": "Profil"
+  }
+}

@@ -59,7 +59,7 @@ async function uploadImage(file: File, bucket: string): Promise<string> {
       const { data } = supabase.storage.from(bucket).getPublicUrl(path);
       return data.publicUrl;
     }
-  } catch { /* fall through */ }
+  } catch (err) { console.error("uploadImage: Supabase storage failed, falling back to base64", err); }
   // Fallback: base64 data URL
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -100,7 +100,7 @@ function loadStories(): Story[] {
       coverGradient: s.coverGradient || COVER_GRADIENTS[0],
       status: s.status || "draft",
     }));
-  } catch { return []; }
+  } catch (err) { console.error("loadStories: failed to parse localStorage stories", err); return []; }
 }
 
 function saveStories(stories: Story[]) {
@@ -1546,9 +1546,7 @@ export function WriteEditor({ onExit, userId }: { onExit?: () => void; userId?: 
         }
       } catch (err) {
         console.error("Supabase create failed:", err);
-        alert("Hata: " + JSON.stringify(err));
       }
-      return;
     }
 
     // Local fallback

@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(netstat:*)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(python3:*)",
+      "Bash(jq:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(powershell:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(npx tsc:*)",
+      "Bash(cd \"C:\\\\Users\\\\PC1\\\\Desktop\\\\redread-next\" && supabase status 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\PC1\\\\Desktop\\\\redread-next\" && supabase projects list 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\PC1\\\\Desktop\\\\redread-next\" && supabase link --project-ref epwyfcwagumvcyvtoylx --password LXHLYFvdsZjmOVOU 2>&1)",
+      "Bash(supabase projects:*)",
+      "Bash(cd \"C:\\\\Users\\\\PC1\\\\Desktop\\\\redread-next\" && vercel logs 4oQU6EwXG2mirwTozX12BZWj7umn 2>&1 | tail -50)",
+      "Bash(cd \"C:\\\\Users\\\\PC1\\\\Desktop\\\\redread-next\" && vercel inspect 4oQU6EwXG2mirwTozX12BZWj7umn 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\PC1\\\\Desktop\\\\redread-next\" && rd /s /q .vercel 2>&1)",
+      "Bash(find /c/Users/PC1/Desktop/redread-next/src/styles -type f -name \"*.css\" 2>/dev/null | head -20)",
+      "Bash(find /c/Users/PC1/Desktop/redread-next -name \"fonts.css\" -o -name \"tailwind.config.*\" 2>/dev/null | head -20)",
+      "Bash(grep -r \"Lora\\\\|Nunito\\\\|@import.*font\\\\|Google.*Font\" /c/Users/PC1/Desktop/redread-next/src --include=\"*.css\" --include=\"*.tsx\" --include=\"*.ts\" 2>/dev/null | head -30)",
+      "Bash(cd \"C:\\\\Users\\\\PC1\\\\Desktop\\\\redread-next\" && node -e 'const fs=require\\(\"fs\"\\); let c=fs.readFileSync\\(\"src/app/landing/page.tsx\",\"utf8\"\\); c=c.replace\\(/href=\"\\\\/\"/g, \"href=\\\\\"/app\\\\\"\"\\); fs.writeFileSync\\(\"src/app/landing/page.tsx\",c\\);')",
+      "Bash(ls /c/Users/PC1/Desktop/redread-next/src/components/redread/figma/ && ls /c/Users/PC1/Desktop/redread-next/src/app/[locale]/ 2>/dev/null || echo \"no locale\")",
+      "Bash(find C:/Users/PC1/Desktop/redread/src -name \"*.tsx\" 2>/dev/null | sort)",
+      "Read(//c/Users/PC1/Desktop/**)",
+      "Bash(node -e \":*)",
+      "Bash(python -c \"\nimport zipfile, re\nwith zipfile.ZipFile\\('C:/Users/PC1/Desktop/AppStore_Kontrol_Listesi.docx'\\) as z:\n    with z.open\\('word/document.xml'\\) as f:\n        xml = f.read\\(\\).decode\\('utf-8'\\)\ntext = re.sub\\('<[^>]+>', ' ', xml\\)\ntext = re.sub\\(r'\\\\s+', ' ', text\\).strip\\(\\)\nprint\\(text[:8000]\\)\n\")",
+      "Bash(cd C:/Users/PC1/Desktop/redread-next && ls src/app/landing/ 2>/dev/null && cat src/app/landing/page.tsx 2>/dev/null | head -20 || echo \"no landing\" && ls src/app/\\\\[locale\\\\]/ 2>/dev/null || echo \"no locale dir\")",
+      "Bash(ls -la C:/Users/PC1/Desktop/redread-next/.env* 2>/dev/null || echo \"no .env files\")",
+      "Bash(git add:*)",
+      "Bash(supabase secrets:*)",
+      "Bash(grep \"CREATE TABLE\" /c/Users/PC1/Desktop/redread-next/supabase/migrations/*.sql)"
+    ]
+  }
+}
